@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:product_app/data/datasources/product_cache_datasource.dart';
 import 'package:product_app/data/datasources/product_remote_datasource.dart';
 import 'package:product_app/data/repositories/product_repository_impl.dart';
@@ -13,23 +14,21 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: ProductPage(
-        viewModel: ProductViewModel(
+      home: ChangeNotifierProvider(
+        create: (context) => ProductViewModel(
           ProductRepositoryImpl(
-            ProductRemoteDatasource(
-              Dio(),
-            ),
-            ProductCacheDatasource()
+            ProductRemoteDatasource(Dio()),
+            ProductCacheDatasource(),
           ),
         ),
+        child: const ProductPage(),
       ),
     );
   }
